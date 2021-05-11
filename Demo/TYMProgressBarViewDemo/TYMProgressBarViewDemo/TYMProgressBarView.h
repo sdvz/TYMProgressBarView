@@ -135,4 +135,9 @@
  */
 + (UIColor *)defaultBarColor;
 
+/**
+ The default value of `labelColor`.
+ */
++ (UIColor *)defaultLabelColor;
+
 @end

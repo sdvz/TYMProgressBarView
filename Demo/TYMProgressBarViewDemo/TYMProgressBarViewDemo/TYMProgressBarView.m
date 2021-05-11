@@ -116,13 +116,17 @@ void setRectPathInContext(CGContextRef context, CGRect rect, CGFloat radius);
     return [UIColor darkGrayColor];
 }
 
++ (UIColor *)defaultLabelColor {
+    return [UIColor blackColor];
+}
+
 
 + (void)initialize {
     if (self == [TYMProgressBarView class]) {
         TYMProgressBarView *appearance = [TYMProgressBarView appearance];
         [appearance setShowLabel:YES];
         [appearance setLabelFont:[UIFont boldSystemFontOfSize:15.0]];
-        [appearance setLabelColor:[UIColor blackColor]];
+        [appearance setLabelColor:[self defaultLabelColor]];
         [appearance setUsesRoundedCorners:YES];
         [appearance setProgress:0];
         [appearance setBarBorderWidth:2.0];
@@ -148,7 +152,7 @@ void setRectPathInContext(CGContextRef context, CGRect rect, CGFloat radius);
 - (UILabel *)progressLabel {
     if (!_progressLabel) {
         _progressLabel = [[UILabel alloc] init];
-        _progressLabel.textColor = _labelColor;
+        _progressLabel.textColor = _labelColor ? _labelColor : [TYMProgressBarView defaultLabelColor];
         _progressLabel.font = _labelFont;
         _progressLabel.textAlignment = NSTextAlignmentRight;
     }
@@ -240,7 +244,17 @@ void setRectPathInContext(CGContextRef context, CGRect rect, CGFloat radius);
             [self addSubview:self.progressLabel];
         }
         CGFloat padding = 8;
-        self.progressLabel.frame = CGRectMake(0, 0, currentRect.size.width - padding, self.bounds.size.height);
+        if (self.progress > 0.5) {
+            // position label INSIDE fill bar
+            self.progressLabel.frame = CGRectMake(0, 0, currentRect.size.width - padding, self.bounds.size.height);
+            self.progressLabel.textAlignment = NSTextAlignmentRight;
+            self.progressLabel.textColor = self.barBackgroundColor;
+        } else {
+            // position label OUTSIDE fill bar
+            self.progressLabel.frame = CGRectMake(currentRect.size.width + padding, 0, rect.size.width - currentRect.size.width - padding, self.bounds.size.height);
+            self.progressLabel.textAlignment = NSTextAlignmentLeft;
+            self.progressLabel.textColor = self.barFillColor;
+        }
         self.progressLabel.text = [NSString stringWithFormat:@"%.0f%%", self.progress*100];
     }
 }

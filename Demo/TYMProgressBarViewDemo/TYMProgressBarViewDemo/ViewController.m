@@ -34,9 +34,7 @@
 }
 
 - (void)changeProgress {
-    self.pb.progress = 0.75;
-    self.pb.labelColor = [UIColor grayColor];
-    self.pb.labelFont = [UIFont systemFontOfSize:8.0];
+    self.pb.progress = 0.99;
 }
 
 - (void)didReceiveMemoryWarning {
